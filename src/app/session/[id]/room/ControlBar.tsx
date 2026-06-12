@@ -1,4 +1,3 @@
-/* eslint-disable react/forbid-dom-props */
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -387,7 +386,7 @@ function CtrlButton({
       title={label}
       aria-label={label}
       data-mobile={dataMobile}
-
+      // eslint-disable-next-line react/forbid-dom-props
       style={style}
     >
       <span className="ctrl-icon-row">
