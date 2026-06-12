@@ -1,10 +1,9 @@
 "use client";
 
-import React, { ReactNode, useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   useLocalParticipant,
   useRoomContext,
-  useIsRecording,
 } from "@livekit/components-react";
 import { Track } from "livekit-client";
 import {
@@ -37,7 +36,8 @@ export default function ControlBar({
 }) {
   const { localParticipant, microphoneTrack, cameraTrack } = useLocalParticipant();
   const room = useRoomContext();
-  const isRecording = useIsRecording();
+  const [isLocalRecording, setIsLocalRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
   const micOn = !!microphoneTrack && !microphoneTrack.isMuted;
   const camOn =
@@ -56,16 +56,55 @@ export default function ControlBar({
     await localParticipant.setScreenShareEnabled(!screenShareOn);
   }
   async function toggleRecording() {
+    if (isLocalRecording) {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
+      }
+      setIsLocalRecording(false);
+      return;
+    }
+
     try {
-      const res = await fetch("/api/record", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: isRecording ? "stop" : "start", roomName: room.name }),
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true,
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-    } catch (e: any) {
-      alert("Failed to toggle recording: " + e.message);
+
+      const mediaRecorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: "video/webm" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style.display = "none";
+        a.href = url;
+        a.download = `recording-${room.name}-${Date.now()}.webm`;
+        a.click();
+        URL.revokeObjectURL(url);
+        stream.getTracks().forEach((t) => t.stop());
+        setIsLocalRecording(false);
+      };
+
+      mediaRecorder.start();
+      mediaRecorderRef.current = mediaRecorder;
+      setIsLocalRecording(true);
+
+      // Stop recording if the user closes the screen share via the browser UI
+      stream.getVideoTracks()[0].onended = () => {
+        if (mediaRecorder.state !== 'inactive') {
+          mediaRecorder.stop();
+        }
+      };
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      alert("Failed to start screen recording: " + msg);
+      setIsLocalRecording(false);
     }
   }
   function toggleBreakout() {
@@ -163,7 +202,7 @@ export default function ControlBar({
           dataMobile="overflow"
         />
         <CtrlButton
-          active={isRecording}
+          active={isLocalRecording}
           onClick={toggleRecording}
           label="Record"
           icon={<RecordIcon />}

@@ -37,8 +37,13 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           room_name: roomName,
           file: {
+            filepath: `recording-${roomName}-${Date.now()}.mp4`,
             file_type: 1 // MP4
-          }
+          },
+          file_outputs: [{
+            filepath: `recording-${roomName}-${Date.now()}.mp4`,
+            file_type: 1
+          }]
         })
       });
 

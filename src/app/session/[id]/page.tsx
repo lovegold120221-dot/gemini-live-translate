@@ -1,8 +1,9 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PICKER_LANGUAGES } from "@/lib/languages";
+import { useUser } from "@/context/UserContext";
 
 const STORAGE_KEY_NAME = "lt.displayName";
 const STORAGE_KEY_LANG = "lt.lang";
@@ -19,19 +20,33 @@ export default function PreFlightPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
+  const { profile, updateProfile } = useUser();
 
   const [displayName, setDisplayName] = useState(
-    () => getSessionItem(STORAGE_KEY_NAME) ?? "",
+    () => getSessionItem(STORAGE_KEY_NAME) ?? profile?.name ?? ""
   );
   const [lang, setLang] = useState<string>(
-    () => getSessionItem(STORAGE_KEY_LANG) ?? "en",
+    () => getSessionItem(STORAGE_KEY_LANG) ?? profile?.default_language ?? "en"
   );
+
+  // Sync profile data when loaded if local session is empty
+  useEffect(() => {
+    if (profile && !getSessionItem(STORAGE_KEY_NAME)) {
+      if (!displayName && profile.name) setDisplayName(profile.name);
+      if (lang === "en" && profile.default_language) setLang(profile.default_language);
+    }
+  }, [profile]);
   const [shareCopied, setShareCopied] = useState(false);
 
-  function handleJoin() {
+  async function handleJoin() {
     if (!displayName.trim()) return;
     window.sessionStorage.setItem(STORAGE_KEY_NAME, displayName.trim());
     window.sessionStorage.setItem(STORAGE_KEY_LANG, lang);
+    
+    if (profile && (profile.name !== displayName.trim() || profile.default_language !== lang)) {
+      updateProfile({ name: displayName.trim(), default_language: lang });
+    }
+
     router.push(`/session/${id}/room`);
   }
 

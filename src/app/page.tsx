@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
+import Link from "next/link";
 
 type ActivePanel = "join" | "schedule";
 type Theme = "dark" | "light";
@@ -16,15 +18,11 @@ export default function Home() {
   const [scheduleTime, setScheduleTime] = useState("");
   const [scheduledLink, setScheduledLink] = useState("");
   const [copied, setCopied] = useState(false);
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === "undefined") return "dark";
-    const savedTheme = window.localStorage.getItem("orbit.theme");
-    return savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
-  });
+  const { profile, updateProfile } = useUser();
+  const theme = profile?.theme || "dark";
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("orbit.theme", theme);
   }, [theme]);
 
   function createSession() {
@@ -84,7 +82,7 @@ export default function Home() {
   }
 
   function toggleTheme() {
-    setTheme((current) => (current === "dark" ? "light" : "dark"));
+    updateProfile({ theme: theme === "dark" ? "light" : "dark" });
   }
 
   return (
@@ -117,6 +115,10 @@ export default function Home() {
               <ThemeIcon />
               <span>{theme === "dark" ? "Light" : "Dark"}</span>
             </button>
+            <Link href="/settings" className="entry-theme-toggle" style={{ textDecoration: 'none' }}>
+              <SettingsIcon />
+              <span>Settings</span>
+            </Link>
             <p className="entry-powered">Powered by Eburon AI</p>
           </div>
         </header>
@@ -324,16 +326,7 @@ function CalendarIcon() {
 
 function ThemeIcon() {
   return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="4" />
       <path d="M12 2v2" />
       <path d="M12 20v2" />
@@ -343,6 +336,15 @@ function ThemeIcon() {
       <path d="M20 12h2" />
       <path d="m6.34 17.66-1.41 1.41" />
       <path d="m19.07 4.93-1.41 1.41" />
+    </svg>
+  );
+}
+
+function SettingsIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
