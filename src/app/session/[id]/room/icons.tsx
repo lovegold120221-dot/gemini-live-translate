@@ -90,3 +90,143 @@ export function ChevronDownIcon() {
     </svg>
   );
 }
+
+export function SecurityIcon() {
+  return (
+    <svg {...baseProps}>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  );
+}
+
+export function ParticipantsIcon() {
+  return (
+    <svg {...baseProps}>
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+export function ChatIcon() {
+  return (
+    <svg {...baseProps}>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
+export function ShareScreenIcon() {
+  return (
+    <svg {...baseProps}>
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+      <path d="M8 21h8" />
+      <path d="M12 17v4" />
+      <path d="M12 8v4" />
+      <path d="M10 10l2-2 2 2" />
+    </svg>
+  );
+}
+
+export function TranslateIcon() {
+  return (
+    <svg {...baseProps}>
+      <path d="M5 8l6 6" />
+      <path d="M4 14l6-6 2-3" />
+      <path d="M2 5h12" />
+      <path d="M7 2h1" />
+      <path d="M22 22l-5-10-5 10" />
+      <path d="M14 18h6" />
+    </svg>
+  );
+}
+
+export function RecordIcon() {
+  return (
+    <svg {...baseProps}>
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="3" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function ReactionsIcon() {
+  return (
+    <svg {...baseProps}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+    </svg>
+  );
+}
+
+export function CheckIcon() {
+  return (
+    <svg {...baseProps} width={16} height={16}>
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+  );
+}
+
+export function SpeakerIcon() {
+  return (
+    <svg {...baseProps}>
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+    </svg>
+  );
+}
+
+export function MoreIcon() {
+  return (
+    <svg {...baseProps}>
+      <circle cx="12" cy="12" r="1" fill="currentColor" />
+      <circle cx="12" cy="5" r="1" fill="currentColor" />
+      <circle cx="12" cy="19" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function PollIcon() {
+  return (
+    <svg {...baseProps}>
+      <rect x="4" y="14" width="4" height="6" rx="1" />
+      <rect x="10" y="8" width="4" height="12" rx="1" />
+      <rect x="16" y="4" width="4" height="16" rx="1" />
+    </svg>
+  );
+}
+
+export function BreakoutRoomsIcon() {
+  return (
+    <svg {...baseProps}>
+      <rect x="3" y="3" width="8" height="8" rx="1.5" />
+      <rect x="13" y="3" width="8" height="8" rx="1.5" />
+      <rect x="3" y="13" width="8" height="8" rx="1.5" />
+      <rect x="13" y="13" width="8" height="8" rx="1.5" />
+    </svg>
+  );
+}
+
+export function CaretUpIcon() {
+  return (
+    <svg {...baseProps} width={10} height={10}>
+      <path d="M18 15l-6-6-6 6" />
+    </svg>
+  );
+}
+
+export function GridViewIcon() {
+  return (
+    <svg {...baseProps} width={14} height={14}>
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+    </svg>
+  );
+}

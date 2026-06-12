@@ -19,6 +19,8 @@ const TRANSLATOR_AGENT_NAME = "gemini-translator";
 export async function GET(req: NextRequest) {
   const room = req.nextUrl.searchParams.get("room");
   const identity = req.nextUrl.searchParams.get("identity");
+  const hostParam = req.nextUrl.searchParams.get("host");
+  const isHost = hostParam === "true";
   const displayName =
     req.nextUrl.searchParams.get("name")?.trim() || identity || "";
 
@@ -56,6 +58,7 @@ export async function GET(req: NextRequest) {
     canPublishData: true,
     canSubscribe: true,
     canUpdateOwnMetadata: true,
+    roomAdmin: isHost,
   });
 
   // Dispatch the Python translator agent when the room is created (grill Q9).

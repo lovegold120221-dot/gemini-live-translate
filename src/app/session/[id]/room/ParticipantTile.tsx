@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   useIsSpeaking,
   useParticipantAttributes,
+  useLocalParticipant,
 } from "@livekit/components-react";
 import { Track, type RemoteParticipant } from "livekit-client";
 import { NATIVE_LANG, PARTICIPANT_LANG_ATTR } from "@/lib/config";
@@ -13,17 +14,56 @@ import { MicOffIcon } from "./icons";
 export default function ParticipantTile({
   participant,
   myLang,
+  isHost,
+  roomName,
 }: {
   participant: RemoteParticipant;
   myLang: string;
+  isHost?: boolean;
+  roomName?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { localParticipant } = useLocalParticipant();
   const [cameraOn, setCameraOn] = useState(false);
   const [micOn, setMicOn] = useState(false);
+  const [modHover, setModHover] = useState(false);
   const isSpeaking = useIsSpeaking(participant);
   const { attributes } = useParticipantAttributes({ participant });
   const speakerLang = attributes?.[PARTICIPANT_LANG_ATTR];
   const langInfo = speakerLang ? getLanguageByCode(speakerLang) : undefined;
+
+  const handleModerate = async (action: 'kick' | 'mute') => {
+    if (!roomName) return;
+    try {
+      const payload: any = { action, roomName, identity: participant.identity };
+      if (action === 'mute') {
+        const audioPub = Array.from(participant.audioTrackPublications.values()).find(p => p.source === Track.Source.Microphone);
+        if (!audioPub || !audioPub.trackSid) {
+          alert('No active microphone found to mute.');
+          return;
+        }
+        payload.trackSid = audioPub.trackSid;
+      }
+      const res = await fetch('/api/moderate', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Action failed');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to execute moderation action.');
+    }
+  };
+
+  const handleRequestVideo = async () => {
+    if (!localParticipant) return;
+    const encoder = new TextEncoder();
+    const data = encoder.encode(JSON.stringify({
+      type: "REQUEST_VIDEO",
+      targetIdentity: participant.identity
+    }));
+    await localParticipant.publishData(data, { topic: "moderate" });
+  };
 
   // True iff we should be hearing their voice via the agent's translator
   // track right now — i.e., we want translation AND their lang differs.
@@ -98,13 +138,37 @@ export default function ParticipantTile({
         </div>
       )}
 
-      <div className="tile-name">
-        <span className="tile-name-text">{displayName}</span>
-        {langInfo && (
-          <span className="tile-badge" title={langInfo.name}>
-            <span aria-hidden>{langInfo.flag}</span>
-            {needsTranslation ? `→ ${myLang.toUpperCase()}` : langInfo.code.toUpperCase()}
-          </span>
+      <div className="tile-name" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span className="tile-name-text">{displayName}</span>
+          {langInfo && (
+            <span className="tile-badge" title={langInfo.name}>
+              <span aria-hidden>{langInfo.flag}</span>
+              {needsTranslation ? `→ ${myLang.toUpperCase()}` : langInfo.code.toUpperCase()}
+            </span>
+          )}
+        </div>
+        {isHost && (
+          <div className="tile-moderation-controls" style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
+            <button 
+              onClick={() => handleRequestVideo()} 
+              style={{ fontSize: '10px', padding: '2px 4px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: '4px', cursor: 'pointer', color: 'var(--fg)' }}
+            >
+              Req Video
+            </button>
+            <button 
+              onClick={() => handleModerate('mute')} 
+              style={{ fontSize: '10px', padding: '2px 4px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: '4px', cursor: 'pointer', color: 'var(--warning)' }}
+            >
+              Mute
+            </button>
+            <button 
+              onClick={() => handleModerate('kick')} 
+              style={{ fontSize: '10px', padding: '2px 4px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: '4px', cursor: 'pointer', color: 'var(--error)' }}
+            >
+              Kick
+            </button>
+          </div>
         )}
       </div>
     </div>

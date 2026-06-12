@@ -33,9 +33,14 @@ export const SUPPORTED_LANGUAGES: Language[] = [
 ];
 
 /** Options shown in the pre-flight language picker. */
-export const PICKER_LANGUAGES: Language[] = [...SUPPORTED_LANGUAGES, NATIVE_OPTION];
-
+export const PICKER_LANGUAGES: Language[] = [
+  ...SUPPORTED_LANGUAGES,
+  NATIVE_OPTION,
+  { code: "be-nl", name: "Belgium - Dutch / Flemish", flag: "🇧🇪" },
+  { code: "be-fr", name: "Belgium - French", flag: "🇧🇪" },
+  { code: "be-de", name: "Belgium - German", flag: "🇧🇪" }
+];
 export function getLanguageByCode(code: string): Language | undefined {
   if (code === NATIVE_OPTION.code) return NATIVE_OPTION;
-  return SUPPORTED_LANGUAGES.find((lang) => lang.code === code);
+  return PICKER_LANGUAGES.find((lang) => lang.code === code);
 }

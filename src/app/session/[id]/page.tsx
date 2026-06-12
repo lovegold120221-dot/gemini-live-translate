@@ -1,11 +1,16 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PICKER_LANGUAGES } from "@/lib/languages";
 
 const STORAGE_KEY_NAME = "lt.displayName";
 const STORAGE_KEY_LANG = "lt.lang";
+
+function getSessionItem(key: string) {
+  if (typeof window === "undefined") return null;
+  return window.sessionStorage.getItem(key);
+}
 
 export default function PreFlightPage({
   params,
@@ -15,18 +20,13 @@ export default function PreFlightPage({
   const { id } = use(params);
   const router = useRouter();
 
-  const [displayName, setDisplayName] = useState("");
-  const [lang, setLang] = useState<string>("en");
+  const [displayName, setDisplayName] = useState(
+    () => getSessionItem(STORAGE_KEY_NAME) ?? "",
+  );
+  const [lang, setLang] = useState<string>(
+    () => getSessionItem(STORAGE_KEY_LANG) ?? "en",
+  );
   const [shareCopied, setShareCopied] = useState(false);
-
-  // Restore last-used name + language so returning users skip retyping.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const savedName = window.sessionStorage.getItem(STORAGE_KEY_NAME);
-    const savedLang = window.sessionStorage.getItem(STORAGE_KEY_LANG);
-    if (savedName) setDisplayName(savedName);
-    if (savedLang) setLang(savedLang);
-  }, []);
 
   function handleJoin() {
     if (!displayName.trim()) return;

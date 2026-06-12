@@ -106,26 +106,23 @@ export default function CaptionsSidebar({
   const myLangInfo = getLanguageByCode(myLang);
 
   return (
-    <aside
-      className={`captions${open ? " open" : ""}`}
-      aria-hidden={!open}
-    >
-      {/* Inner has a fixed width so the outer can animate its width 0 -> 380px
-          without the content reflowing / squishing along the way. */}
-      <div className="captions-inner">
-        <div className="captions-header">
+    <div className="sidebar-panel">
+      <div className="sidebar-header">
           <span>
             Captions {myLangInfo && `· ${myLangInfo.flag} ${myLangInfo.name}`}
           </span>
           <button
-            className="captions-close"
-            onClick={onClose}
-            aria-label="Close captions"
-          >
-            Close
-          </button>
-        </div>
-        <div ref={bodyRef} className="captions-body">
+          className="sidebar-close"
+          onClick={onClose}
+          aria-label="Close captions"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div ref={bodyRef} className="sidebar-body">
           {entries.length === 0 ? (
             <div className="captions-empty">
               No captions yet. Translation transcripts will appear here as
@@ -148,8 +145,7 @@ export default function CaptionsSidebar({
               </div>
             ))
           )}
-        </div>
       </div>
-    </aside>
+    </div>
   );
 }

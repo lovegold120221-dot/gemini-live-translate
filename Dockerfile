@@ -30,4 +30,7 @@ COPY --from=builder /app/public ./public
 
 EXPOSE 8080
 
+# Run as non-root user for security
+USER node
+
 CMD ["node", "server.js"]

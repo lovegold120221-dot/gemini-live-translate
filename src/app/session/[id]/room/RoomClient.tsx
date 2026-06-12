@@ -13,6 +13,11 @@ import InCall from "./InCall";
 const STORAGE_KEY_NAME = "lt.displayName";
 const STORAGE_KEY_LANG = "lt.lang";
 
+function getSessionItem(key: string) {
+  if (typeof window === "undefined") return null;
+  return window.sessionStorage.getItem(key);
+}
+
 interface TokenResponse {
   token: string;
   serverUrl: string;
@@ -28,8 +33,12 @@ export default function RoomClient({ sessionId }: { sessionId: string }) {
       ? `peer-${crypto.randomUUID().slice(0, 8)}`
       : `peer-${Math.random().toString(36).slice(2, 10)}`,
   );
-  const [displayName, setDisplayName] = useState<string>("");
-  const [initialLang, setInitialLang] = useState<string>("en");
+  const [displayName] = useState<string>(
+    () => getSessionItem(STORAGE_KEY_NAME) ?? "",
+  );
+  const [initialLang] = useState<string>(
+    () => getSessionItem(STORAGE_KEY_LANG) ?? "en",
+  );
 
   // Pull name + lang chosen in the pre-flight screen. If missing, send the
   // user back to the pre-flight so they can pick.
@@ -39,18 +48,16 @@ export default function RoomClient({ sessionId }: { sessionId: string }) {
     const lang = window.sessionStorage.getItem(STORAGE_KEY_LANG);
     if (!name || !lang) {
       router.replace(`/session/${sessionId}`);
-      return;
     }
-    setDisplayName(name);
-    setInitialLang(lang);
   }, [router, sessionId]);
 
   // Mint a LiveKit token.
   useEffect(() => {
     if (!displayName) return;
+    const isHost = typeof window !== 'undefined' && window.localStorage.getItem("orbitHostRoom") === sessionId;
     const url = `/api/token?room=${encodeURIComponent(
       sessionId,
-    )}&identity=${encodeURIComponent(identity)}&name=${encodeURIComponent(displayName)}`;
+    )}&identity=${encodeURIComponent(identity)}&name=${encodeURIComponent(displayName)}${isHost ? '&host=true' : ''}`;
     fetch(url)
       .then(async (res) => {
         if (!res.ok) {
