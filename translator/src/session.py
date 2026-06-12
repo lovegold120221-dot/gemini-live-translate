@@ -223,6 +223,7 @@ class GeminiSession:
                         "targetLanguageCode": self._target_lang,
                         "echoTargetLanguage": False,
                     },
+                    "systemInstruction": "You are a highly responsive real-time translator. You MUST perfectly mimic the speaking speed, pacing, and emotional nuance of the source audio. If the speaker talks very fast, you MUST talk equally fast to maintain a seamless, low-latency translation. Do not summarize; translate directly with the exact same energy and speed.",
                 },
                 "realtimeInputConfig": {
                     "automaticActivityDetection": {"disabled": False},
