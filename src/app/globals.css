@@ -4297,7 +4297,9 @@ html[data-theme="light"] .tile-name {
 }
 
 
-
+.tile-video-hidden {
+  display: none !important;
+}
 
 
 

@@ -1,4 +1,5 @@
 /* eslint-disable react/forbid-dom-props, react/forbid-component-props, react-native/no-inline-styles */
+/* eslint-disable react-native/no-inline-styles */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -124,8 +125,7 @@ export default function ParticipantTile({
         autoPlay
         playsInline
         muted
-        className="tile-video"
-        style={{ display: cameraOn ? "block" : "none" }}
+        className={`tile-video ${cameraOn ? "" : "tile-video-hidden"}`}
       />
       {!cameraOn && (
         <div className="tile-placeholder">

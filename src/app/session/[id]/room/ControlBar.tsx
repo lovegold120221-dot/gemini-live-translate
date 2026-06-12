@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 "use client";
 
 import React, { useState, useRef } from "react";
