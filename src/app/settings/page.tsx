@@ -118,9 +118,8 @@ export default function SettingsPage() {
             onClick={() => router.back()}
             aria-label="Close settings"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M5 5l10 10M15 5l-10 10" />
             </svg>
           </button>
         </div>
@@ -225,8 +224,10 @@ export default function SettingsPage() {
 
             {activeTab === "video" && (
               <div className="settings-tab">
-                <h2 className="settings-tab-title">Video</h2>
-                <p className="settings-tab-desc">Configure your camera, preview, and background effects.</p>
+                <div className="settings-page-header">
+                  <h1 className="settings-page-title">Video</h1>
+                  <p className="settings-page-subtitle">Configure your camera, preview, and background effects.</p>
+                </div>
 
                 {/* Live camera preview with backgrounds */}
                 <CameraPreview
@@ -237,20 +238,24 @@ export default function SettingsPage() {
                   onDirty={markDirty}
                 />
 
-                <div className="settings-toggle-row">
-                  <div>
-                    <span className="settings-label">Turn off camera when joining</span>
-                    <p className="settings-hint">Keep your camera off when you enter a meeting</p>
+                {/* Turn off camera when joining */}
+                <div className="setting-row">
+                  <div className="setting-info">
+                    <h4>Turn off camera when joining</h4>
+                    <p>Keep your camera off when you enter a meeting</p>
                   </div>
-                  <label className="settings-switch">
-                    <input
-                      type="checkbox"
-                      checked={cameraOffOnJoin}
-                      onChange={(e) => { setCameraOffOnJoin(e.target.checked); markDirty(); }}
-                    />
-                    <span className="settings-slider" />
-                  </label>
+                  <div className="setting-actions">
+                    <label className="toggle-switch">
+                      <input
+                        type="checkbox"
+                        checked={cameraOffOnJoin}
+                        onChange={(e) => { setCameraOffOnJoin(e.target.checked); markDirty(); }}
+                      />
+                      <span className="slider" />
+                    </label>
+                  </div>
                 </div>
+
               </div>
             )}
 
@@ -332,16 +337,17 @@ export default function SettingsPage() {
               </div>
             )}
 
-            <div className="settings-footer">
+            <div className="settings-divider" />
+            <div className="settings-form-actions">
               <button
-                className="settings-btn settings-btn-primary"
+                className="btn btn-primary"
                 type="submit"
                 disabled={saving || !dirty}
               >
                 {saving ? "Saving..." : "Save"}
               </button>
               <button
-                className="settings-btn settings-btn-ghost"
+                className="btn btn-outline"
                 type="button"
                 onClick={() => router.back()}
               >

@@ -176,3 +176,40 @@
 - CSS preserved: All existing settings UI preserved; camera preview is additive in Video tab
 - Data: Background images stored in localStorage (avoiding Supabase row size limits), selection saved to profile
 - Known note: True AI virtual background removal (green-screen effect) would require TensorFlow.js/MediaPipe segmentation — current implementation uses CSS blur overlay and image backgrounds on the preview container, which gives a Zoom-style preview but isn't real person segmentation
+
+## TASK-20260612-123000: Move settings icon + screen share dialog + ScreenShareView
+
+### START RECORD
+- STATUS: COMPLETED
+- Start time: 2026-06-12T12:30:00Z
+
+### WHAT WAS DONE
+- **Settings icon moved** to center section (between Reactions and Leave) of ControlBar
+- **Share screen dialog**: clicking Share Screen opens a dialog with "Share computer sound" checkbox; confirms via `localParticipant.setScreenShareEnabled(true, { audio: shareWithAudio })`
+- **ScreenShareView component**: monitors participants for screen share tracks, renders video with sharer name, translation status, and "Stop Sharing" button for local sharer
+- **Screen share integration in InCall**: `useTracks([Track.Source.ScreenShare])` — when active, ScreenShareView replaces ActiveSpeaker in `.orbit-stage-center`
+- **Files changed:** `ControlBar.tsx`, `ScreenShareView.tsx` (new), `InCall.tsx`, `globals.css`
+
+## TASK-20260612-143000: Camera preview fixes + hydration error fix
+
+### START RECORD
+- STATUS: COMPLETED
+- Start time: 2026-06-12T14:30:00Z
+
+### WHAT WAS DONE
+- **Camera preview mirror+blur conflict resolved**: both used `transform` — now computed as single inline string (`"scaleX(-1) scale(1.1)"` when both active); blur uses separate `filter` property
+- **Custom background as container bg-img**: changed from overlay `<img>` (hid the video) to `background-image` on preview container; video at `z-index: 1` renders on top
+- **Hydration mismatch fixed**: removed `getSessionItem()` from `useState` initializers in `page.tsx`; values now read from `sessionStorage` inside `useEffect` after mount
+- **Files changed:** `CameraPreview.tsx`, `session/[id]/page.tsx`
+
+## TASK-20260612-153000: Settings page color alignment + video tab redesign
+
+### START RECORD
+- STATUS: COMPLETED
+- Start time: 2026-06-12T15:30:00Z
+
+### WHAT WAS DONE
+- **Settings page color alignment**: made all settings elements match entry page — no border-radius, `var(--bg)` input backgrounds, primary buttons use `background: var(--fg); color: var(--bg)`, toggles use `var(--fg)` for checked state, thumbnails square, nav items no background highlight
+- **Video tab redesigned** to match user-provided HTML reference: `CameraPreview` restructured with `.setting-row` / `.setting-info` / `.setting-actions` layout, `.toggle-switch` / `.slider` rounded 24px toggles, `.settings-divider`, `.settings-form-actions`
+- **Settings CSS rewritten**: replaced `.settings-btn` / `.settings-btn-primary` / `.settings-btn-ghost` with `.settings-shell .btn / .btn-primary / .btn-outline` overrides; removed unused classes (`.settings-cam-mirror`, `.settings-cam-blur`, `.settings-cam-bg-img`, `.settings-toggle-label`, `.settings-preview-actions`, `.settings-toggle-row--slim`); added `.setting-row`, `.toggle-switch`, `.slider`, `.settings-page-header`, `.settings-divider`, `.settings-form-actions`
+- **Files changed:** `globals.css`, `settings/page.tsx`, `CameraPreview.tsx`

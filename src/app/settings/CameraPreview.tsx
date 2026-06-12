@@ -144,15 +144,13 @@ export default function CameraPreview({
       onDirty();
     };
     reader.readAsDataURL(file);
-    // Reset so same file can be re-selected
     e.target.value = "";
   };
 
   return (
     <div className="settings-preview-section">
-      <span className="settings-label">Camera Preview</span>
-
       {/* Preview box */}
+      <div className="settings-preview-header">Camera Preview</div>
       <div
         className={`settings-cam-preview${showBackgroundEffect ? " settings-cam-preview--bg" : ""}`}
         style={containerStyle}
@@ -177,7 +175,7 @@ export default function CameraPreview({
               <path d="M3 3l18 18" />
             </svg>
             <span>{camError}</span>
-            <button onClick={startCamera} className="settings-cam-retry">
+            <button onClick={startCamera} className="btn btn-outline" style={{ marginTop: 8, padding: '6px 16px', fontSize: 13 }}>
               Retry
             </button>
           </div>
@@ -187,29 +185,29 @@ export default function CameraPreview({
             <span>Starting camera...</span>
           </div>
         )}
-
       </div>
 
-      {/* Preview controls row */}
-      <div className="settings-preview-actions">
-        <label className="settings-toggle-row settings-toggle-row--slim">
-          <span className="settings-toggle-label">Mirror my video</span>
-          <label className="settings-switch">
+      {/* Mirror + Background row */}
+      <div className="setting-row">
+        <div className="setting-info">
+          <h4>Mirror my video</h4>
+        </div>
+        <div className="setting-actions">
+          <button
+            className="btn btn-outline"
+            onClick={() => setShowBgPicker(!showBgPicker)}
+          >
+            {showBgPicker ? "Hide" : "Background"}
+          </button>
+          <label className="toggle-switch">
             <input
               type="checkbox"
               checked={mirror}
               onChange={(e) => { onMirrorChange(e.target.checked); onDirty(); }}
             />
-            <span className="settings-slider" />
+            <span className="slider" />
           </label>
-        </label>
-
-        <button
-          className="settings-btn settings-btn-small"
-          onClick={() => setShowBgPicker(!showBgPicker)}
-        >
-          {showBgPicker ? "Hide" : "Background"}
-        </button>
+        </div>
       </div>
 
       {/* Background picker panel */}
