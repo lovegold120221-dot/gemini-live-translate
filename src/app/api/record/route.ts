@@ -25,7 +25,9 @@ export async function POST(req: NextRequest) {
       at.addGrant({ roomRecord: true });
       const jwt = await at.toJwt();
       
-      const host = serverUrl.replace(/\/$/, "");
+      let host = serverUrl.replace(/\/$/, "");
+      host = host.replace(/^wss:\/\//i, "https://").replace(/^ws:\/\//i, "http://");
+      
       const res = await fetch(`${host}/twirp/livekit.Egress/StartRoomCompositeEgress`, {
         method: "POST",
         headers: {
