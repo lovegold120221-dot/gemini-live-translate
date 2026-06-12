@@ -1,18 +1,6 @@
 import React from 'react';
 // Props now include an onButtonClick function to simulate interactivity
-const BottomToolbar = ({ isDesktop, onButtonClick }) => {
-
-  // Helper function for button structure with tooltips
-    const ControlButton = ({ iconClass, children, title, onClick }) => (
-        <button 
-            className={`flex flex-col items-center p-2 transition duration-150 text-xs ${title.includes('Leave') ? 'leave-btn' : ''}`} 
-            onClick={onClick}
-            title={title} /* Provides the tooltip */
-        >
-            {children || <i className={`fa-solid ${iconClass}`}>{/* Icon placeholder */}</i>}
-            <span className="text-gray-400 mt-1 hidden lg:block">{title}</span> {/* Show text only on desktop for better UX when needed */}
-        </button>
-    );
+const BottomToolbar = ({ isDesktop }) => {
 
   // Handler that simulates running the meeting app logic
   const handleButtonClick = (action) => {

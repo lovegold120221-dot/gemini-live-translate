@@ -121,7 +121,7 @@ function applyHumanSubscriptions(
     if (pub.track && pub.track instanceof Track) {
       // livekit-client Track class has a setVolume method (inherited or directly on RemoteAudioTrack)
       // Since it's an audio track, we cast and call it if it exists.
-      const audioTrack = pub.track as any;
+      const audioTrack = pub.track as Track & { setVolume?: (volume: number) => void };
       if (typeof audioTrack.setVolume === "function") {
         if (!translationEnabled || hearNative || !muteOriginal) {
           audioTrack.setVolume(1.0);
