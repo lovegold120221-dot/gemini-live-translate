@@ -870,3 +870,73 @@ Agent starts, connects to LiveKit Cloud (`wss://eburon-meet-15gd8gwg.livekit.clo
   - Add a middleware for route protection (redirect to /auth/login for certain routes)
   - Add password strength indicator to signup form
   - Add email change flow in Settings page
+
+---
+
+## TASK-20260613-152600: Release v0.1.0 — build apps + GitHub release
+
+### START RECORD
+- STATUS: COMPLETED
+- Start time: 2026-06-13T15:26:00Z
+- User request: Commit remaining changes, build release apps, add to GitHub release
+- Preservation constraints: All existing code preserved; only added icons and fixed a missing TypeScript import
+- Success criteria:
+  - All modified files committed and pushed
+  - Electron macOS build (DMG + ZIP) for both Intel and Apple Silicon
+  - Android debug APK
+  - GitHub release with all artifacts downloadable
+  - Tag pushed to both origin and fantastic remotes
+
+### CHANGES MADE
+
+**Icon Generation (from public/icon.svg):**
+- `electron/assets/icon.icns` (81 KB) — macOS iconset via iconutil with all sizes 16→1024
+- `electron/assets/icon.ico` (302 KB) — multi-resolution Windows icon (16/32/48/64/256)
+- `android/app/src/main/res/mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/ic_launcher.png` — Android launcher icons
+- `android/app/src/main/res/mipmap-{xhdpi,xxhdpi,xxxhdpi}/ic_launcher_foreground.png` — Android adaptive icon foregrounds
+
+**Bug Fix:**
+- `src/app/session/[id]/room/ControlBar.tsx` — added missing `useEffect` import (build was failing with TS error)
+
+**Builds Produced:**
+| Artifact | Size | Platform |
+|----------|------|----------|
+| `Orbit Meeting-0.1.0-mac-arm64.dmg` | 192 MB | macOS Apple Silicon installer |
+| `Orbit Meeting-0.1.0-mac-arm64.zip` | 193 MB | macOS Apple Silicon portable |
+| `Orbit Meeting-0.1.0-mac-x64.dmg` | 196 MB | macOS Intel installer |
+| `Orbit Meeting-0.1.0-mac-x64.zip` | 197 MB | macOS Intel portable |
+| `app-debug.apk` | 3.9 MB | Android debug APK (Capacitor) |
+
+**GitHub Release:**
+- Created `v0.1.0` on `lovegold120221-dot/gemini-live-translate`
+- Release URL: https://github.com/lovegold120221-dot/gemini-live-translate/releases/tag/v0.1.0
+- Tag also pushed to `lovegold120221-dot/fantastic`
+
+### FINAL REPORT
+- STATUS: COMPLETED
+- End time: 2026-06-13T15:35:00Z
+- Files changed:
+  - `src/app/session/[id]/room/ControlBar.tsx` — added `useEffect` import
+  - `electron/assets/icon.icns` — replaced 66B placeholder with 81KB real icon
+  - `electron/assets/icon.ico` — replaced 39B placeholder with 302KB real icon
+  - `android/app/src/main/res/mipmap-*/ic_launcher.png` (5 files) — replaced placeholders
+  - `android/app/src/main/res/mipmap-*/ic_launcher_foreground.png` (3 files) — new files
+  - `AGENTS.md` — already committed in previous task
+  - `TASK.md` — this entry added
+- Validation:
+  - Frontend build: ✅ 16 routes, compiled in 2.1s
+  - Electron macOS build: ✅ 4 artifacts (arm64+x64, DMG+ZIP)
+  - Android APK: ✅ BUILD SUCCESSFUL in 24s, 93 tasks
+  - GitHub release: ✅ 6 assets uploaded, tag v0.1.0 on both remotes
+- CSS/UI preservation: Only added `useEffect` import; no CSS changes
+- Real data/API check: No credential changes
+- Known issues:
+  - Apps are not code-signed (macOS shows security warning on first launch — expected for dev builds)
+  - Android APK is a debug build (no keystore configured for release signing)
+  - Electron icon files are now stored in git (binary files, ~400KB total)
+- Next steps:
+  - Test the macOS DMG on a fresh machine (verify Ollama detection flow)
+  - Build Windows/Linux Electron apps on appropriate CI runners
+  - Configure keystore for Android release builds (`android/app/build.gradle` signingConfigs)
+  - Test PWA install flow at https://legendary-ten.vercel.app/
+  - Add "Return to main room" button in breakout rooms UI
