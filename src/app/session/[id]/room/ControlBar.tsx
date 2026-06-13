@@ -26,6 +26,7 @@ import {
   PollIcon,
   BreakoutRoomsIcon,
   SettingsIcon,
+  LinkIcon,
   CaretUpIcon,
 } from "./icons";
 
@@ -49,6 +50,13 @@ export default function ControlBar({
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [shareWithAudio, setShareWithAudio] = useState(true);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const micOn = !!microphoneTrack && !microphoneTrack.isMuted;
   const camOn =
@@ -158,7 +166,7 @@ export default function ControlBar({
         <CtrlButton
           active={camOn}
           onClick={toggleCam}
-          label={camOn ? "Stop Video" : "Start Video"}
+          label="Video"
           icon={camOn ? <CamOnIcon /> : <CamOffIcon />}
           dataMobile="primary"
           hasCaret
@@ -170,7 +178,7 @@ export default function ControlBar({
         <CtrlButton
           active={activeSidebar === "participants"}
           onClick={() => onToggleSidebar("participants")}
-          label="Participants"
+          label="People"
           icon={<ParticipantsIcon />}
           dataMobile="overflow"
           hasCaret
@@ -193,7 +201,7 @@ export default function ControlBar({
         <CtrlButton
           active={screenShareOn}
           onClick={handleShareScreen}
-          label={screenShareOn ? "Stop Sharing" : "Share Screen"}
+          label="Share"
           icon={<ShareScreenIcon />}
           dataMobile="primary-share"
           hasCaret
@@ -231,8 +239,15 @@ export default function ControlBar({
         <CtrlButton
           active={speakerMuted}
           onClick={onToggleSpeaker}
-          label={speakerMuted ? "Unmute Speakers" : "Mute Speakers"}
+          label="Speaker"
           icon={speakerMuted ? <SpeakerOffIcon /> : <SpeakerIcon />}
+          dataMobile="overflow"
+        />
+        <CtrlButton
+          active={copied}
+          onClick={handleCopyLink}
+          label={copied ? "Copied" : "Link"}
+          icon={<LinkIcon />}
           dataMobile="overflow"
         />
         <CtrlButton
@@ -321,7 +336,7 @@ function MicButton({
     <CtrlButton
       active={micOn}
       onClick={toggleMic}
-      label={micOn ? "Mute" : "Unmute"}
+      label="Mic"
       icon={micOn ? <MicOnIcon /> : <MicOffIcon />}
       dataMobile="primary"
       muted={!micOn}

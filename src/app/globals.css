@@ -730,7 +730,8 @@ body {
   justify-content: center;
   align-items: center;
   gap: 6px;
-  padding: 14px 24px;
+  height: 64px;
+  padding: 0 24px;
   border-top: 1px solid var(--border-light);
   background: var(--bg);
 }
@@ -1054,7 +1055,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 24px;
+  height: 64px;
+  padding: 0 24px;
 }
 
 .orbit-topbar-left,
