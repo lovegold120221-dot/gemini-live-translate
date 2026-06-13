@@ -1091,3 +1091,72 @@ Agent starts, connects to LiveKit Cloud (`wss://eburon-meet-15gd8gwg.livekit.clo
   - Several host menu items are no-ops because `livekit-server-sdk` RoomServiceClient doesn't support `setParticipantAttributes`, presenter, or spotlight APIs.
   - "Block participant" removed from menu since the server has no blocklist mechanism — only immediate kick is possible.
 - Next step: Wire `trackSid` lookup into the mute moderation call, or change the API route to auto-discover the track.
+
+## TASK-20260613-193000: Create all apps release v0.2.0
+
+### START RECORD
+- STATUS: COMPLETED
+- Start time: 2026-06-13T19:30:00Z
+- User request: Create all apps release
+- Success criteria:
+  - Version bumped to 0.2.0
+  - Android release APK built and signed
+  - Electron macOS builds (arm64 + x64, DMG + ZIP) built
+  - GitHub release created with all 5 assets
+  - Tags pushed to all remotes
+
+### WHAT WAS DONE
+
+**Version bump:**
+- package.json: 0.1.0 → 0.2.0
+- android/app/build.gradle: versionCode 1→2, versionName "1.0"→"0.2.0"
+
+**Android release build:**
+- Generated `android/app/release.keystore` (RSA 2048, 10,000 day validity)
+- Added `signingConfigs.release` to build.gradle with keystore reference
+- Updated `capacitor.config.ts` with keystore paths
+- Added `release.keystore` to `.gitignore` (never commit secrets)
+- Built with JDK 25 (Gradle needed >21, Homebrew Java 17 was insufficient)
+- Output: `app-release.apk` (3.0 MB, signed release)
+
+**Electron macOS build:**
+- Ran `electron-builder --mac` producing arm64 + x64 for both DMG and ZIP
+- Output (4 files, ~778 MB total):
+  - Orbit Meeting-0.2.0-mac-arm64.dmg (192 MB)
+  - Orbit Meeting-0.2.0-mac-arm64.zip (193 MB)
+  - Orbit Meeting-0.2.0-mac-x64.dmg (196 MB)
+  - Orbit Meeting-0.2.0-mac-x64.zip (197 MB)
+
+**GitHub release v0.2.0:**
+- Created on `lovegold120221-dot/gemini-live-translate`
+- Release URL: https://github.com/lovegold120221-dot/gemini-live-translate/releases/tag/v0.2.0
+- 5 assets uploaded (4 macOS + 1 Android)
+- Tag pushed to `origin` and `fantastic` remotes
+
+### FINAL REPORT
+- STATUS: COMPLETED
+- End time: 2026-06-13T19:40:00Z
+- Files changed:
+  - `package.json` — version 0.1.0 → 0.2.0
+  - `android/app/build.gradle` — version bump + release signing config
+  - `capacitor.config.ts` — keystore paths for Android build
+  - `.gitignore` — added `android/app/release.keystore`
+- Files created:
+  - `android/app/release.keystore` — development keystore for APK signing
+  - `dist-electron/Orbit Meeting-0.2.0-mac-*.{dmg,zip}` — 4 Electron artifacts
+  - `android/app/build/outputs/apk/release/app-release.apk` — signed APK
+- Validation:
+  - `pnpm build` — 16 routes, compiled in ~2s
+  - Android `assembleRelease` — BUILD SUCCESSFUL in 22s, 124 tasks
+  - Electron-builder — both architectures completed
+  - GitHub release verified — 5 assets listed
+- Known issues:
+  - macOS apps are not code-signed (expected for dev builds — security warning on first launch)
+  - Keystore password visible in `build.gradle` and `capacitor.config.ts` — for production Play Store release, use environment variables (`$RELEASE_STORE_PASSWORD`, etc.) instead
+  - Windows and Linux Electron builds not produced (cross-compilation not available on this macOS machine)
+  - `orbit.eburon.ai` domain resolves but may not be the latest deployment
+- Next steps:
+  - Build Windows/Linux Electron on appropriate CI runners
+  - Configure Play Store keystore with env-var-based passwords for production signing
+  - Set up CI pipeline to automate builds on tag push
+  - Update `capacitor.config.ts` server.url to Vercel deployment if the custom domain is not yet configured
