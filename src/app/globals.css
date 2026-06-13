@@ -4756,5 +4756,19 @@ html[data-theme="light"] .tile-name {
   display: none !important;
 }
 
-
-
+/* Added for linter compliance */
+.local-tile-video-mirror {
+  transform: scaleX(-1);
+}
+.orbit-subbar-divider-spaced {
+  margin: 0 8px;
+  color: rgba(255, 255, 255, 0.3);
+}
+.orbit-translation-status-text {
+  color: #aaa;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.mic-btn-wrapper {
+  display: contents;
+}

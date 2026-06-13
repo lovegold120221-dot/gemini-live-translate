@@ -62,8 +62,7 @@ export default function LocalTile({ myLang }: { myLang: string }) {
         autoPlay
         playsInline
         muted
-        className={`tile-video ${cameraOn ? "" : "tile-video-hidden"}`}
-        style={{ transform: 'scaleX(-1)' }} // mirror local video
+        className={`tile-video local-tile-video-mirror ${cameraOn ? "" : "tile-video-hidden"}`}
       />
       {!cameraOn && (
         <div className="tile-placeholder">

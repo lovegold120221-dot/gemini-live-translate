@@ -19,11 +19,9 @@ export default function GalleryView({
   const count = remotes.length + 1; // +1 for local
   
   let gridClass = "gallery-grid-1";
-  let gridStyle: React.CSSProperties = {};
   
   if (count === 1) {
     gridClass = "gallery-grid-1";
-    gridStyle = { gridTemplateColumns: '1fr', gridTemplateRows: '1fr' };
   } else if (count === 2) {
     gridClass = "gallery-grid-2";
   } else if (count <= 4) {
@@ -37,7 +35,7 @@ export default function GalleryView({
   }
 
   return (
-    <div className={`gallery-view ${gridClass}`} style={gridStyle}>
+    <div className={`gallery-view ${gridClass}`}>
       <div className="gallery-view-item">
         <LocalTile myLang={myLang} />
       </div>

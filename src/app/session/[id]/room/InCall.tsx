@@ -148,8 +148,8 @@ export default function InCall({
                 Original Sound: Off
               </span>
               <ChevronDownIcon />
-              <span className="orbit-subbar-divider" style={{ margin: '0 8px', color: 'rgba(255, 255, 255, 0.3)' }}>·</span>
-              <span className="orbit-translation-status" style={{ color: '#aaa', fontSize: '12px', whiteSpace: 'nowrap' }}>
+              <span className="orbit-subbar-divider orbit-subbar-divider-spaced">·</span>
+              <span className="orbit-translation-status orbit-translation-status-text">
                 Translation: {langInfo?.name || lang} &middot; Voice: Orus
               </span>
             </div>

@@ -322,7 +322,7 @@ export default function ControlBar({
           <div className="mobile-more-menu" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-more-header">
               <h3>More Options</h3>
-              <button className="mobile-more-close" onClick={() => setShowMoreMenu(false)}>
+              <button className="mobile-more-close" onClick={() => setShowMoreMenu(false)} title="Close menu" aria-label="Close menu">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
@@ -408,23 +408,28 @@ function MicButton({
 }) {
   const volume = useTrackVolume(microphoneTrack);
   const isSpeaking = micOn && volume > 0.05;
+  const wrapperRef = useRef<HTMLDivElement>(null);
   
-  return (
-    <CtrlButton
-      active={micOn}
-      onClick={toggleMic}
-      label="Mic"
-      icon={micOn ? <MicOnIcon /> : <MicOffIcon />}
-      dataMobile="primary"
-      muted={!micOn}
-      hasCaret
-      className="mic-btn"
+  useEffect(() => {
+    if (wrapperRef.current) {
+      wrapperRef.current.style.setProperty('--volume-opacity', isSpeaking ? String(Math.min(0.8, volume * 2)) : '0');
+      wrapperRef.current.style.setProperty('--volume-scale', isSpeaking ? String(1 + (volume * 0.5)) : '1');
+    }
+  }, [isSpeaking, volume]);
 
-      style={{
-        '--volume-opacity': isSpeaking ? Math.min(0.8, volume * 2) : 0,
-        '--volume-scale': isSpeaking ? 1 + (volume * 0.5) : 1,
-      } as React.CSSProperties}
-    />
+  return (
+    <div ref={wrapperRef} className="mic-btn-wrapper">
+      <CtrlButton
+        active={micOn}
+        onClick={toggleMic}
+        label="Mic"
+        icon={micOn ? <MicOnIcon /> : <MicOffIcon />}
+        dataMobile="primary"
+        muted={!micOn}
+        hasCaret
+        className="mic-btn"
+      />
+    </div>
   );
 }
 

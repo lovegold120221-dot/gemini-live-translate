@@ -221,9 +221,12 @@ export default function TranslationPlayground({ voice }: { voice: string }) {
       {/* Language selectors */}
       <div className="settings-playground-row">
         <div className="settings-playground-field">
-          <label className="settings-label">I speak</label>
+          <label className="settings-label" htmlFor="source-lang-select">I speak</label>
           <select
+            id="source-lang-select"
             className="settings-select"
+            title="Source language"
+            aria-label="Source language"
             value={sourceLang}
             onChange={(e) => {
               setSourceLang(e.target.value);
@@ -255,9 +258,12 @@ export default function TranslationPlayground({ voice }: { voice: string }) {
           </svg>
         </div>
         <div className="settings-playground-field">
-          <label className="settings-label">Translate to</label>
+          <label className="settings-label" htmlFor="target-lang-select">Translate to</label>
           <select
+            id="target-lang-select"
             className="settings-select"
+            title="Target language"
+            aria-label="Target language"
             value={targetLang}
             onChange={(e) => {
               setTargetLang(e.target.value);
